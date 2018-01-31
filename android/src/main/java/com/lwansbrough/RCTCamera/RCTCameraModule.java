@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Surface;
+import android.content.pm.PackageManager;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
@@ -24,6 +25,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
+import com.facebook.react.bridge.ReactContext;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -661,13 +663,15 @@ public class RCTCameraModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void hasFlash(ReadableMap options, final Promise promise) {
-        Camera camera = RCTCamera.getInstance().acquireCameraInstance(options.getInt("type"));
-        if (null == camera) {
-            promise.reject("No camera found.");
-            return;
-        }
-        List<String> flashModes = camera.getParameters().getSupportedFlashModes();
-        promise.resolve(null != flashModes && !flashModes.isEmpty());
+        promise.resolve(_reactContext.getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH));
+        // _reactContext.
+        // Camera camera = RCTCamera.getInstance().acquireCameraInstance(options.getInt("type"));
+        // if (null == camera) {
+        //     promise.reject("No camera found.");
+        //     return;
+        // }
+        // List<String> flashModes = camera.getParameters().getSupportedFlashModes();
+        // promise.resolve(null != flashModes && !flashModes.isEmpty());
     }
 
     private File getOutputMediaFile(int type) {
